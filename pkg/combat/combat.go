@@ -128,7 +128,8 @@ func (e *Encounter) CombatLoop(desc string) {
 		respPrompt := e.ProcessLLMMap(e.llm.NextCombatPrompt(s))
 		fmt.Printf("----------------------\n")
 		if respPrompt.Content == "" && respPrompt.Type == "combat" {
-			fmt.Printf("RespPrompt is NOTHING")
+			fmt.Printf("RespPrompt during combat is NOTHING")
+			fmt.Printf("RespPrompt: %+v\n", respPrompt)
 			break
 		}
 		fmt.Printf("TYPE: %+v\n", respPrompt.Type)

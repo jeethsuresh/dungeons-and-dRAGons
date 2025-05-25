@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
@@ -39,6 +40,8 @@ var InitialPrompt = `You are an expert Dungeon Master.
 
 	If you respond with a COMBAT type response, you must also give the first turn of the combat encounter. 
 	Never respond with an EXPLORATION type response if your content contains a battle scene, or an impending battle. 
+
+	When you are taking part in a conversation, describe the tone and emotion of the character as well as the words they say.
 	
 	`
 
@@ -78,6 +81,9 @@ func NewLLM(systemPrompt string, responseFormat map[string]any) *LLM {
 
 func (l *LLM) NextPrompt(prompt string) MessageContent {
 	endpoint := "http://localhost:1234/v1/chat/completions"
+	if altEndpoint := os.Getenv("DND_ALT_ENDPOINT"); altEndpoint != "" {
+		endpoint = altEndpoint
+	}
 	l.Context = append(l.Context, Message{Role: "user", Content: prompt, Length: len(prompt)})
 	reqBody := map[string]any{
 		"model":       l.Model,
